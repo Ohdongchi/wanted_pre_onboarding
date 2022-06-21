@@ -22,21 +22,34 @@ export class EmploymentService {
     // 공고 등록
     async newEmployment(req: Request, payload: NewEmploymentDto): Promise<any> {
 
+        // 회사찾기
         const corp = await this.dataSource.manager.getRepository(Corporation).createQueryBuilder("corp")
             .where("corp.id = :id", { id: payload.corpId })
             .getOne();
+
         if (!corp) {
             throw new BadRequestException("일치하는 회사가 없습니다.");
         }
 
-        const employSql = await this.dataSource.manager.getRepository(Employment).createQueryBuilder("employment")
-        const findEmployment = employSql
-            .select(["replace(employment.position)"])
-            .getOne();
-        console.log(findEmployment);
+        const employSql = this.dataSource.manager
+            .getRepository(Employment)
+            .createQueryBuilder("employment");
 
 
-        // dataSource test
+        // 중복된 공고
+        const trimPosition = payload.position.replace(/(\s*)/g, '');
+
+        const findEmployment = await employSql
+            .select(["replace(employment.position, ' ', '') as position", "employment.corporation as corpId"])
+            .having("position = :position", { position: trimPosition })
+            .andHaving("corpId = :corpId", { corpId: payload.corpId })
+            .getRawOne();
+
+        if (findEmployment) {
+            throw new BadRequestException("중복된 공고입니다.");
+        }
+
+        // 공고 등록
         const insertEmployment = employSql
             .insert()
             .into(Employment)
@@ -45,11 +58,11 @@ export class EmploymentService {
                 corporation: corp,
                 reward: payload.reward,
                 description: payload.description,
-                stack:payload.stack
+                stack: payload.stack
             })
             .execute();
-
-        console.log(insertEmployment);
+        return { message: "ok" };
+        // console.log(insertEmployment);
     }
 
 }

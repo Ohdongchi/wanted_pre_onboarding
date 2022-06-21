@@ -67,7 +67,7 @@ export class AppService {
       // 없으면 추가
       if (!findState) {
         const newState = new State();
-        newState.stateName;
+        newState.stateName = payload.state;
         state = await entityManager.save(newState);
       } else {
         // 있으면 찾은 state 값을 state 변수에 넣고
