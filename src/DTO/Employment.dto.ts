@@ -35,6 +35,46 @@ export class NewEmploymentDto {
     @ApiProperty({
         description: "사용 기술"
     })
+    @IsDefined()
+    @IsString()
     stack: string;
 }
 
+export class UpdateEmploymentDto {
+
+    @ApiProperty({
+        description: "회사 id"
+    })
+    @IsDefined()
+    @IsNumber()
+    corpId: number;
+
+    @ApiPropertyOptional({
+        description: "채용 포지션",
+    })
+    @IsOptional()
+    @IsString()
+    position: string;
+
+    @ApiPropertyOptional({
+        description: "채용 보상금",
+        default: 0
+    })
+    @IsOptional()
+    @IsNumber()
+    reward: number;
+
+    @ApiPropertyOptional({
+        description: "채용 설명"
+    })
+    @IsOptional()
+    @IsString()
+    description: string;
+
+    @ApiPropertyOptional({
+        description: "사용 기술"
+    })
+    @IsOptional()
+    @IsString()
+    stack: string;
+}

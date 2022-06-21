@@ -1,5 +1,6 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ApplyLog } from "./Mapping/ApplyLog.entity";
+import { CorpUserRole } from "./Mapping/CorpRole.entity";
 
 @Entity({ name: "user" })
 export class User extends BaseEntity {
@@ -14,4 +15,7 @@ export class User extends BaseEntity {
 
     @OneToMany(() => ApplyLog, apply => apply.user)
     apply: ApplyLog[];
+
+    @OneToMany(()=>CorpUserRole, (corpUserRole) => corpUserRole.user)
+    corpRole: CorpUserRole[];
 }

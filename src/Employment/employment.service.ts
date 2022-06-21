@@ -5,7 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 
 import { User } from 'src/Models/User.entity';
 import { Employment } from 'src/Models/Employment.entity';
-import { NewEmploymentDto } from 'src/DTO/Employment.Dto';
+import { NewEmploymentDto, UpdateEmploymentDto } from 'src/DTO/Employment.Dto';
 import { Corporation } from 'src/Models/Corp/Corporation.entity';
 
 // import { dataSource } from 'src/util/DataSource';
@@ -63,6 +63,21 @@ export class EmploymentService {
             .execute();
         return { message: "ok" };
         // console.log(insertEmployment);
+    }
+
+    async updateEmployment(payload: UpdateEmploymentDto): Promise<any> {
+
+        const corp = await this.dataSource.manager.getRepository(Corporation).createQueryBuilder("corp")
+            .where("corp.id = :id", { id: payload.corpId })
+            .getOne();
+
+        if (!corp) {
+            throw new BadRequestException("일치하는 회사가 없습니다.");
+        }
+
+        
+
+        return;
     }
 
 }

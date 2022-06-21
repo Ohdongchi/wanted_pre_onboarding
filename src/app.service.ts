@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { DataSource, EntityManager } from 'typeorm';
 import { NewCorpDto } from './DTO/Corportaion.dto';
@@ -8,7 +8,9 @@ import { Part } from './Models/Corp/Part.entity';
 import { State } from './Models/Corp/State.entity';
 import { CorpArea } from './Models/Mapping/CorpArea.entity';
 import { CorpPart } from './Models/Mapping/CorpPart.entity';
+import { CorpUserRole } from './Models/Mapping/CorpRole.entity';
 import { CorpState } from './Models/Mapping/CorpState.entity';
+import { User } from './Models/User.entity';
 
 
 @Injectable()
@@ -55,7 +57,6 @@ export class AppService {
     let part: any;
 
     this.dataSource.manager.transaction(async entityManager => {
-
 
       / * ====== State ====== */
       // state 가 있나 조회
@@ -116,11 +117,40 @@ export class AppService {
       newCorpPart.corp = insertCorp.generatedMaps[0].id;
       newCorpPart.part = part;
       await entityManager.save(newCorpPart);
+    });
+    return {
+      message: "ok"
+    };
+  }
 
-      
+  async addUserCorpRole(req: Request, payload: any): Promise<any> {
+    
+    const userCorpRoleSql = this.dataSource.manager.getRepository(CorpUserRole).createQueryBuilder("corpUserRole");
 
-    })
-    console.log("hi! 끝");
+    const findUserCorpRole = await userCorpRoleSql
+      .where("corpUserRole.user = :userId", { userId: req.headers.user_id })
+      .getOne();
+
+    const findCorp = await this.dataSource.manager.getRepository(Corporation).createQueryBuilder("corp")
+      .where("corp.id = :id", { id: payload.corpId })
+      .getOne();
+
+    const findUser = await this.dataSource.manager.getRepository(User).createQueryBuilder("user")
+      .where("user.id =:id", { id: req.headers.user_id })
+      .getOne();
+
+
+    if (!findUserCorpRole) {
+      // 권한이 없다면 추가
+      // 이렇게 안해도 될거같긴한데..
+      userCorpRoleSql.insert().into(CorpUserRole).values({
+        corp: findCorp,
+        user: findUser,
+      }).execute();
+      return { message: "ok" };
+    }
+    return {message:"failed"};
+
   }
 
 }

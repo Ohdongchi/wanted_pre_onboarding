@@ -13,8 +13,13 @@ export class AppController {
   }
 
   @Post("/corp/new")
-  async newCorporation(@Req() req: Request, @Body() payload: NewCorpDto ): Promise<string> {
+  async newCorporation(@Req() req: Request, @Body() payload: NewCorpDto): Promise<string> {
     return await this.appService.newCorp(payload);
+  }
+
+  @Post("/corp/user/role")
+  async addUserCorpRole(@Req() req: Request, @Body() payload: any): Promise<any> {
+    return await this.appService.addUserCorpRole(req, payload);
   }
 
 }

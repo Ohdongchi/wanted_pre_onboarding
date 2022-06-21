@@ -4,6 +4,7 @@ import { BaseEntity, Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMa
 import { Employment } from "../Employment.entity";
 import { CorpArea } from "../Mapping/CorpArea.entity";
 import { CorpPart } from "../Mapping/CorpPart.entity";
+import { CorpUserRole } from "../Mapping/CorpRole.entity";
 import { CorpState } from "../Mapping/CorpState.entity";
 
 @Entity({ name: "corporation" })
@@ -47,6 +48,8 @@ export class Corporation extends BaseEntity {
     corpState: CorpState[];
 
     @OneToMany(() => Employment, (employment) => employment.corporation)
-    employment: Corporation;
+    employment: Employment[];
 
+    @OneToMany(() => CorpUserRole, corpRole => corpRole.corp)
+    corpRole: CorpUserRole[];
 }
