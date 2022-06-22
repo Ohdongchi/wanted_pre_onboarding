@@ -149,7 +149,7 @@ export class AppService {
       }).execute();
       return { message: "ok" };
     }
-    return {message:"failed"};
+    return {message:"이미 권한이 있습니다"};
 
   }
 

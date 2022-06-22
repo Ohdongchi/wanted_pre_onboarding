@@ -1,6 +1,6 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
-import { NewEmploymentDto, UpdateEmploymentDto } from 'src/DTO/Employment.Dto';
+import { DeleteEmploymentDto, NewEmploymentDto, UpdateEmploymentDto } from 'src/DTO/Employment.Dto';
 import { EmploymentService } from './employment.service';
 
 @Controller('employment')
@@ -21,8 +21,17 @@ export class EmploymentController {
 
     @Post("/update")
     async updateEmployment(@Req() req: Request, @Body() payload: UpdateEmploymentDto): Promise<any> {
-        return this.employmentService.updateEmployment(payload);
+        return this.employmentService.updateEmployment(payload, req);
     }
-    
+
+    @Delete("/:id")
+    async deleteEmployment(@Req() req: Request, @Param("id") id: number): Promise<any> {
+        return this.employmentService.deleteEmployment(req, id);
+    }
+
+    @Get("/list")
+    async getEmployment(): Promise<any> {
+        return this.employmentService.getEmployment();
+    }
 
 }

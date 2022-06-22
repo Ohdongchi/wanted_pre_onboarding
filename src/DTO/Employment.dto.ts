@@ -1,5 +1,5 @@
 import { ApiPropertyOptional, ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNumber, IsOptional, IsDefined } from "class-validator";
+import { IsString, IsNumber, IsOptional, IsDefined, isDecimal, isDefined } from "class-validator";
 
 export class NewEmploymentDto {
 
@@ -43,11 +43,11 @@ export class NewEmploymentDto {
 export class UpdateEmploymentDto {
 
     @ApiProperty({
-        description: "회사 id"
+        description: "공고 id"
     })
     @IsDefined()
     @IsNumber()
-    corpId: number;
+    employmentId: number;
 
     @ApiPropertyOptional({
         description: "채용 포지션",
@@ -77,4 +77,15 @@ export class UpdateEmploymentDto {
     @IsOptional()
     @IsString()
     stack: string;
+}
+
+
+export class DeleteEmploymentDto {
+    @ApiProperty({
+        description: "공고 id",
+    })
+    @IsDefined()
+    @IsNumber()
+    employmentId: number;
+
 }
