@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { DeleteEmploymentDto, NewEmploymentDto, UpdateEmploymentDto } from 'src/DTO/Employment.Dto';
 import { EmploymentService } from './employment.service';
@@ -32,6 +32,12 @@ export class EmploymentController {
     @Get("/list")
     async getEmployment(): Promise<any> {
         return this.employmentService.getEmployment();
+    }
+
+    @Get("/")
+    async getSearchData(@Query("search") query: any): Promise<any> {
+        console.log(query);
+        return this.employmentService.getSearchData(query);
     }
 
 }

@@ -130,27 +130,20 @@ export class EmploymentService {
     async getEmployment(): Promise<any> {
         // 헷갈린다.. 나는 회사의 위치에 따라서 state, area, part를 지정했는데 지금와서 보면
         // 공고마다 지역이 다를 수 있을거다 라는 생각이 든다. 그러나 예시데이터를 보면 국가, 지역이 없어서 회사 entity에 넣어버렸다..
-        return await this.dataSource.manager.getRepository(Employment).createQueryBuilder("employment")
-            .select([
-                "employment.id as employmentId",
-                "employment.position as position",
-                "employment.reward as reward",
-                "employment.description as description",
-                "employment.stack as stack",
-                "corporation.name as corpName",
-                "area.areaName as areaName",
-                "state.stateName as stateName",
-                "part.partName as partName"
-            ])
-            .leftJoin("employment.corporation", "corporation")
-            .leftJoin("corporation.corpArea", "corp_area")
-            .leftJoin("corp_area.area", "area")
-            .leftJoin("corporation.corpState", "corp_state")
-            .leftJoin("corp_state.state", "state")
-            .leftJoin("corporation.corpPart", "corp_part")
-            .leftJoin("corp_part.part", "part")
+        return await (await Employment.getEmployments()).getRawMany();
+    }
+
+    async getSearchData(query: any): Promise<any> {
+        return await (await Employment.getEmployments())
+            .where("position like :search", { search: `%${query}%` })
+            .orWhere("description like :search", { search: `%${query}%` })
+            .orWhere("stack like :search", { search: `%${query}%` })
+            .orWhere("areaName like :search", { search: `%${query}%` })
+            .orWhere("stateName like :search", { search: `%${query}%` })
+            .orWhere("partName like :search", { search: `%${query}%` })
+            .orWhere("corporation.name like :search", { search: `%${query}%` })
             .getRawMany();
-        // 코드가 너무 더럽다...
+        // corporation.name as corpName 으로 별칭 지어줘도 왜 안되징... 연구를 더 해야봐야겠다..
     }
 
 }
