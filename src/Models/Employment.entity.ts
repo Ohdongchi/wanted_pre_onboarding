@@ -53,7 +53,7 @@ export class Employment extends BaseEntity {
     @CreateDateColumn()
     createdAt: Date;
 
-    static async getEmployments() {
+    static getEmployments() {
         return this.createQueryBuilder("employment")
             .select([
                 "employment.id as employmentId",

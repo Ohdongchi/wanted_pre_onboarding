@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Req, UsePipes } from '@nestjs/common';
 import { Request } from 'express';
-import { DeleteEmploymentDto, NewEmploymentDto, UpdateEmploymentDto } from 'src/DTO/Employment.Dto';
+import { pipe } from 'rxjs';
+import { ApplyAndDeleteEmploymentDto, NewEmploymentDto, UpdateEmploymentDto } from 'src/DTO/Employment.Dto';
 import { EmploymentService } from './employment.service';
 
 @Controller('employment')
@@ -25,7 +26,7 @@ export class EmploymentController {
     }
 
     @Delete("/:id")
-    async deleteEmployment(@Req() req: Request, @Param("id") id: number): Promise<any> {
+    async deleteEmployment(@Req() req: Request, @Param("id", ParseIntPipe) id: number): Promise<any> {
         return this.employmentService.deleteEmployment(req, id);
     }
 
@@ -38,6 +39,17 @@ export class EmploymentController {
     async getSearchData(@Query("search") query: any): Promise<any> {
         console.log(query);
         return this.employmentService.getSearchData(query);
+    }
+
+    @Get("/detail/:id")
+    async getDetailEmployment(@Param("id", ParseIntPipe) id: number): Promise<any> {
+        console.log(id);
+        return this.employmentService.getDetailEmployment(id);
+    }
+
+    @Post("/apply")
+    async applyEmployment(@Req() req: Request, @Body() payload: ApplyAndDeleteEmploymentDto): Promise<any> {
+        return this.employmentService.applyEmployment(req, payload);
     }
 
 }

@@ -80,7 +80,7 @@ export class UpdateEmploymentDto {
 }
 
 
-export class DeleteEmploymentDto {
+export class ApplyAndDeleteEmploymentDto {
     @ApiProperty({
         description: "공고 id",
     })
